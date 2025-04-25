@@ -362,10 +362,41 @@
 
         <h2 class="text-center mt-5 mb-4"><i class="fas fa-globe-americas"></i> Global Influence Map</h2>
         
-        <div class="interactive-map mb-4">
-    <img src="images/cold-war-map-1974.png" alt="Cold War Alliances Map 1974" style="width:100%; height:100%; object-fit: contain;">
+        <!-- Interactive Map Section -->
+<div class="interactive-map mb-4" id="coldWarMap">
+    <img src="images/cold-war-map-1974.png" alt="Cold War Alliances Map 1974" usemap="#coldwarmap" style="width:100%; height:100%; object-fit: contain;">
     <div class="map-tooltip" id="mapTooltip"></div>
 </div>
+
+<map name="coldwarmap">
+    <!-- North America -->
+    <area shape="rect" coords="50,100,250,250" href="#" title="North America" 
+          data-info="<strong>U.S. and NATO Allies</strong><br>• United States (NATO leader)<br>• Canada (NATO member)<br>• Stable anti-communist bloc">
+    
+    <!-- Western Europe -->
+    <area shape="rect" coords="300,150,450,220" href="#" title="Western Europe" 
+          data-info="<strong>NATO Members</strong><br>• UK, France, West Germany<br>• Italy, Spain, Portugal<br>• Norway, Denmark, Benelux">
+    
+    <!-- Eastern Europe -->
+    <area shape="rect" coords="450,150,600,250" href="#" title="Eastern Europe" 
+          data-info="<strong>Warsaw Pact</strong><br>• USSR (dominant power)<br>• Poland, East Germany<br>• Czechoslovakia, Hungary<br>• Bulgaria, Romania">
+    
+    <!-- Middle East -->
+    <area shape="rect" coords="450,250,600,350" href="#" title="Middle East" 
+          data-info="<strong>Strategic Battleground</strong><br>• US Allies: Israel, Saudi Arabia, Iran<br>• Soviet Allies: Syria, Iraq, Libya<br>• Non-aligned: Egypt, Algeria">
+    
+    <!-- Africa -->
+    <area shape="rect" coords="350,350,550,500" href="#" title="Africa" 
+          data-info="<strong>Proxy War Zones</strong><br>• Soviet Allies: Angola, Mozambique, Ethiopia<br>• US Allies: Zaire, Kenya, South Africa<br>• Decolonization ongoing">
+    
+    <!-- South America -->
+    <area shape="rect" coords="150,350,300,500" href="#" title="South America" 
+          data-info="<strong>US Sphere of Influence</strong><br>• Mostly military dictatorships<br>• Cuban/Soviet influence growing<br>• Allende recently overthrown in Chile (1973)">
+    
+    <!-- Asia -->
+    <area shape="rect" coords="600,200,800,400" href="#" title="Asia" 
+          data-info="<strong>Complex Alliances</strong><br>• Communist China (independent from USSR)<br>• North Korea (USSR-aligned)<br>• Vietnam (USSR-aligned post-1975)<br>• US Allies: Japan, South Korea, Philippines">
+</map>
 
         <div class="row">
             <div class="col-md-6">
@@ -523,36 +554,49 @@
         const tooltip = document.getElementById('mapTooltip');
         
         // Sample coordinates for some countries (would need proper implementation for real map)
-       const countryData = {
-    'North America': 'U.S. and allies - NATO member states',
-    'South America': 'Mostly U.S. aligned with some Soviet influence in Cuba and Nicaragua',
-    'Europe': 'Western Europe: NATO members<br>Eastern Europe: Warsaw Pact members',
-    'Africa': 'Mixed allegiances - Soviet support in Angola, Mozambique, Ethiopia',
-    'Middle East': 'Strategic battleground - Soviet allies in Syria, Iraq',
-    'Asia': 'Communist China (independent from USSR)<br>North Korea, Vietnam aligned with USSR',
-    'Oceania': 'U.S. allies Australia and New Zealand'
-};
-        
-        map.addEventListener('mousemove', function(e) {
-            // In a real implementation, you would use proper map coordinates
-            // This is just a simplified demonstration
+       // Map Tooltip Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const map = document.getElementById('coldWarMap');
+    const tooltip = document.getElementById('mapTooltip');
+    const areas = document.querySelectorAll('area');
+    
+    // Show detailed tooltip when hovering over map areas
+    areas.forEach(area => {
+        area.addEventListener('mouseover', function(e) {
+            tooltip.innerHTML = this.dataset.info;
             tooltip.style.display = 'block';
-            tooltip.style.left = (e.clientX - map.getBoundingClientRect().left + 10) + 'px';
-            tooltip.style.top = (e.clientY - map.getBoundingClientRect().top + 10) + 'px';
-            
-            // Simplified region detection (would need proper implementation)
-            let region = '';
-            if (e.clientY < 200) region = 'Europe';
-            else if (e.clientY < 300) region = 'Asia';
-            else if (e.clientY < 400) region = 'Africa';
-            else region = 'Latin America';
-            
-            tooltip.innerHTML = `<strong>${region}</strong><br>${countryData[region]}`;
         });
         
-        map.addEventListener('mouseout', function() {
+        area.addEventListener('mousemove', function(e) {
+            tooltip.style.left = (e.pageX + 15) + 'px';
+            tooltip.style.top = (e.pageY + 15) + 'px';
+        });
+        
+        area.addEventListener('mouseout', function() {
             tooltip.style.display = 'none';
         });
+    });
+    
+    // Show general info when clicking on non-area parts of map
+    map.addEventListener('click', function(e) {
+        if(e.target.tagName === 'IMG') {
+            tooltip.innerHTML = `
+                <h5>Cold War Alliances (1974)</h5>
+                <p><strong>Blue:</strong> NATO/US-aligned states</p>
+                <p><strong>Red:</strong> Warsaw Pact/Soviet-aligned states</p>
+                <p><strong>Grey:</strong> Non-aligned or contested areas</p>
+                <small>Hover over regions for details</small>
+            `;
+            tooltip.style.display = 'block';
+            tooltip.style.left = (e.pageX + 15) + 'px';
+            tooltip.style.top = (e.pageY + 15) + 'px';
+            
+            setTimeout(() => {
+                tooltip.style.display = 'none';
+            }, 3000);
+        }
+    });
+});
     </script>
 </body>
 </html>
