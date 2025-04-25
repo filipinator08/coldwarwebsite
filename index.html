@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cold War Influence: U.S. vs. U.S.S.R.</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --usa-blue: #0056b3;
+            --usa-red: #bf0a30;
+            --ussr-red: #cc0000;
+            --ussr-yellow: #ffd700;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0056b3, #bf0a30, #cc0000, #ffd700);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            background-color: #333;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 3px;
+        }
+        
+        .container-tl {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+        
+        .container-tl::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: -17px;
+            background-color: white;
+            border: 4px solid #333;
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .left {
+            left: 0;
+        }
+        
+        .right {
+            left: 50%;
+        }
+        
+        .left::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            right: 30px;
+            border: medium solid #f8f9fa;
+            border-width: 10px 0 10px 10px;
+            border-color: transparent transparent transparent #f8f9fa;
+        }
+        
+        .right::before {
+            content: " ";
+            height: 0;
+            position: absolute;
+            top: 22px;
+            width: 0;
+            z-index: 1;
+            left: 30px;
+            border: medium solid #f8f9fa;
+            border-width: 10px 10px 10px 0;
+            border-color: transparent #f8f9fa transparent transparent;
+        }
+        
+        .right::after {
+            left: -16px;
+        }
+        
+        .content {
+            padding: 20px 30px;
+            background-color: white;
+            position: relative;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .usa-card {
+            border-left: 5px solid var(--usa-blue);
+        }
+        
+        .ussr-card {
+            border-left: 5px solid var(--ussr-red);
+        }
+        
+        .proxy-card {
+            border-left: 5px solid #6c757d;
+        }
+        
+        .interactive-map {
+            height: 500px;
+            background-color: #eee;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .map-tooltip {
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 100;
+        }
+        
+        .quiz-container {
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .quiz-question {
+            margin-bottom: 15px;
+        }
+        
+        .quiz-option {
+            margin: 5px 0;
+            padding: 8px;
+            background-color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background-color: #e9ecef;
+        }
+        
+        .quiz-option.correct {
+            background-color: #d4edda;
+        }
+        
+        .quiz-option.incorrect {
+            background-color: #f8d7da;
+        }
+        
+        .quiz-feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .source-btn {
+            cursor: pointer;
+        }
+        
+        .flip-card {
+            perspective: 1000px;
+            margin: 20px 0;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .flip-card-front {
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+        }
+        
+        .flip-card-back {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            transform: rotateY(180deg);
+        }
+        
+        @media screen and (max-width: 600px) {
+            .timeline::after {
+                left: 31px;
+            }
+            
+            .container-tl {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            
+            .container-tl::before {
+                left: 60px;
+                border: medium solid white;
+                border-width: 10px 10px 10px 0;
+                border-color: transparent white transparent transparent;
+            }
+            
+            .left::after, .right::after {
+                left: 15px;
+            }
+            
+            .right {
+                left: 0%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header text-center">
+        <div class="container">
+            <h1 class="display-4"><i class="fas fa-balance-scale-left"></i> Cold War Influence</h1>
+            <p class="lead">Comparing U.S. and U.S.S.R. Strategies for Maintaining Global Power (1947-1991)</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-center"><i class="fas fa-flag-usa"></i> United States</h3>
+                        <p class="card-text">The U.S. sought to contain communism through economic aid, military alliances, and supporting anti-communist regimes.</p>
+                        <ul>
+                            <li>Marshall Plan (1948)</li>
+                            <li>NATO (1949)</li>
+                            <li>Truman Doctrine (1947)</li>
+                            <li>CIA covert operations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title text-center"><i class="fas fa-hammer"></i> Soviet Union</h3>
+                        <p class="card-text">The U.S.S.R. promoted communist revolutions, established satellite states, and provided military/economic aid to allies.</p>
+                        <ul>
+                            <li>Warsaw Pact (1955)</li>
+                            <li>Cominform (1947)</li>
+                            <li>Brezhnev Doctrine (1968)</li>
+                            <li>KGB operations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-center mb-4"><i class="fas fa-history"></i> Cold War Timeline of Influence</h2>
+        
+        <div class="timeline">
+            <div class="container-tl left">
+                <div class="content usa-card">
+                    <h3>1947 - Truman Doctrine</h3>
+                    <p>The U.S. pledges to support nations resisting communism, beginning with $400 million to Greece and Turkey.</p>
+                    <button class="btn btn-sm btn-primary source-btn" data-source="source1">Source</button>
+                </div>
+            </div>
+            <div class="container-tl right">
+                <div class="content ussr-card">
+                    <h3>1949 - COMECON</h3>
+                    <p>The Soviet Union establishes the Council for Mutual Economic Assistance to coordinate economic planning among communist states.</p>
+                    <button class="btn btn-sm btn-danger source-btn" data-source="source2">Source</button>
+                </div>
+            </div>
+            <div class="container-tl left">
+                <div class="content proxy-card">
+                    <h3>1950-1953 - Korean War</h3>
+                    <p>The first major proxy war with the U.S. supporting South Korea and the USSR/China backing North Korea.</p>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Korean_War_Montage_2.png/640px-Korean_War_Montage_2.png" class="img-fluid mb-2" alt="Korean War images">
+                    <button class="btn btn-sm btn-secondary source-btn" data-source="source3">Source</button>
+                </div>
+            </div>
+            <div class="container-tl right">
+                <div class="content ussr-card">
+                    <h3>1956 - Hungarian Revolution</h3>
+                    <p>Soviets crush anti-communist uprising in Hungary, demonstrating willingness to use force to maintain control.</p>
+                    <button class="btn btn-sm btn-danger source-btn" data-source="source4">Source</button>
+                </div>
+            </div>
+            <div class="container-tl left">
+                <div class="content usa-card">
+                    <h3>1961 - Bay of Pigs</h3>
+                    <p>Failed U.S.-backed invasion of Cuba highlights American attempts to overthrow communist regimes.</p>
+                    <button class="btn btn-sm btn-primary source-btn" data-source="source5">Source</button>
+                </div>
+            </div>
+            <div class="container-tl right">
+                <div class="content proxy-card">
+                    <h3>1975-2002 - Angolan Civil War</h3>
+                    <p>U.S. supports UNITA while USSR backs MPLA in a decades-long conflict over Angola's post-colonial government.</p>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Angola_Civil_War_Map.svg/640px-Angola_Civil_War_Map.svg.png" class="img-fluid mb-2" alt="Angolan Civil War map">
+                    <button class="btn btn-sm btn-secondary source-btn" data-source="source6">Source</button>
+                </div>
+            </div>
+            <div class="container-tl left">
+                <div class="content proxy-card">
+                    <h3>1980s - Nicaraguan Revolution</h3>
+                    <p>U.S. funds Contras to fight against Soviet-backed Sandinista government in Nicaragua.</p>
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/6XW1l0jvR9Y" title="Nicaragua Revolution documentary" allowfullscreen></iframe>
+                    </div>
+                    <button class="btn btn-sm btn-secondary source-btn" data-source="source7">Source</button>
+                </div>
+            </div>
+            <div class="container-tl right">
+                <div class="content ussr-card">
+                    <h3>1979-1989 - Soviet-Afghan War</h3>
+                    <p>USSR invades Afghanistan to support communist government, while U.S. funds mujahideen resistance.</p>
+                    <button class="btn btn-sm btn-danger source-btn" data-source="source8">Source</button>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="text-center mt-5 mb-4"><i class="fas fa-globe-americas"></i> Global Influence Map</h2>
+        
+        <div class="interactive-map mb-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Cold_war_around_1975.svg/1920px-Cold_war_around_1975.svg.png" alt="Cold War Alliances Map" style="width:100%; height:100%; object-fit: contain;">
+            <div class="map-tooltip" id="mapTooltip"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="text-center p-4">
+                                <i class="fas fa-landmark fa-5x mb-3"></i>
+                                <h3>U.S. Economic Strategies</h3>
+                                <p>Click to flip and learn more</p>
+                            </div>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4>U.S. Economic Influence</h4>
+                            <ul>
+                                <li>Marshall Plan ($13 billion to rebuild Europe)</li>
+                                <li>World Bank and IMF control</li>
+                                <li>Trade embargoes against communist states</li>
+                                <li>Support for capitalist development in Third World</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <div class="text-center p-4">
+                                <i class="fas fa-ruble-sign fa-5x mb-3"></i>
+                                <h3>Soviet Economic Strategies</h3>
+                                <p>Click to flip and learn more</p>
+                            </div>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4>Soviet Economic Influence</h4>
+                            <ul>
+                                <li>COMECON trade bloc</li>
+                                <li>Heavy industry development in satellites</li>
+                                <li>Military and economic aid to allies</li>
+                                <li>Support for nationalization in client states</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-container">
+            <h3 class="text-center mb-4"><i class="fas fa-question-circle"></i> Cold War Knowledge Check</h3>
+            
+            <div class="quiz-question">
+                <p>1. Which doctrine stated that the USSR had the right to intervene in any socialist country threatened by "counter-revolution"?</p>
+                <div class="quiz-option" data-correct="true">Brezhnev Doctrine</div>
+                <div class="quiz-option">Truman Doctrine</div>
+                <div class="quiz-option">Eisenhower Doctrine</div>
+                <div class="quiz-option">Kennedy Doctrine</div>
+                <div class="quiz-feedback">Correct! The Brezhnev Doctrine (1968) justified Soviet intervention in Czechoslovakia and other Warsaw Pact countries.</div>
+            </div>
+            
+            <div class="quiz-question">
+                <p>2. In which proxy war did the U.S. support UNITA rebels against the Soviet-backed MPLA government?</p>
+                <div class="quiz-option">Korean War</div>
+                <div class="quiz-option">Vietnam War</div>
+                <div class="quiz-option" data-correct="true">Angolan Civil War</div>
+                <div class="quiz-option">Nicaraguan Revolution</div>
+                <div class="quiz-feedback">Correct! The Angolan Civil War (1975-2002) saw U.S. support for UNITA against the Soviet-supported MPLA.</div>
+            </div>
+            
+            <div class="quiz-question">
+                <p>3. What was the name of the U.S. program that provided economic aid to Western Europe after WWII?</p>
+                <div class="quiz-option">Truman Doctrine</div>
+                <div class="quiz-option" data-correct="true">Marshall Plan</div>
+                <div class="quiz-option">Berlin Airlift</div>
+                <div class="quiz-option">NATO Initiative</div>
+                <div class="quiz-feedback">Correct! The Marshall Plan (1948-1951) provided over $13 billion (equivalent to $150 billion today) to rebuild Western Europe.</div>
+            </div>
+            
+            <button id="checkAnswers" class="btn btn-primary mt-3">Check Answers</button>
+            <button id="resetQuiz" class="btn btn-outline-secondary mt-3 ms-2">Reset Quiz</button>
+        </div>
+
+        <h2 class="text-center mt-5 mb-4"><i class="fas fa-book"></i> Sources & Bibliography</h2>
+        
+        <div class="card mb-4">
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" id="source1">1. "Truman Doctrine (1947)." National Archives. <a href="https://www.archives.gov/milestone-documents/truman-doctrine" target="_blank">https://www.archives.gov/milestone-documents/truman-doctrine</a></li>
+                    <li class="list-group-item" id="source2">2. "COMECON." Library of Congress. <a href="https://www.loc.gov/item/2021668394/" target="_blank">https://www.loc.gov/item/2021668394/</a></li>
+                    <li class="list-group-item" id="source3">3. "Korean War." History.com. <a href="https://www.history.com/topics/korea/korean-war" target="_blank">https://www.history.com/topics/korea/korean-war</a></li>
+                    <li class="list-group-item" id="source4">4. "The Hungarian Revolution of 1956." Office of the Historian, U.S. State Department. <a href="https://history.state.gov/milestones/1953-1960/hungarian-revolution" target="_blank">https://history.state.gov/milestones/1953-1960/hungarian-revolution</a></li>
+                    <li class="list-group-item" id="source5">5. "Bay of Pigs Invasion." JFK Library. <a href="https://www.jfklibrary.org/learn/about-jfk/jfk-in-history/bay-of-pigs" target="_blank">https://www.jfklibrary.org/learn/about-jfk/jfk-in-history/bay-of-pigs</a></li>
+                    <li class="list-group-item" id="source6">6. "Angolan Civil War." BBC News. <a href="https://www.bbc.com/news/world-africa-13036732" target="_blank">https://www.bbc.com/news/world-africa-13036732</a></li>
+                    <li class="list-group-item" id="source7">7. "Nicaragua: The Contra War." PBS Frontline. <a href="https://www.pbs.org/wgbh/frontline/article/nicaragua-the-contra-war/" target="_blank">https://www.pbs.org/wgbh/frontline/article/nicaragua-the-contra-war/</a></li>
+                    <li class="list-group-item" id="source8">8. "The Soviet Invasion of Afghanistan." Wilson Center. <a href="https://www.wilsoncenter.org/article/the-soviet-invasion-afghanistan" target="_blank">https://www.wilsoncenter.org/article/the-soviet-invasion-afghanistan</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>Cold War Influence Comparison - Created for GitHub Pages</p>
+            <p>Educational Project - All sources properly cited</p>
+            <p><i class="far fa-copyright"></i> 2023</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Quiz functionality
+        document.getElementById('checkAnswers').addEventListener('click', function() {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                if (option.hasAttribute('data-correct')) {
+                    option.classList.add('correct');
+                } else {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            document.querySelectorAll('.quiz-feedback').forEach(feedback => {
+                feedback.style.display = 'block';
+            });
+        });
+        
+        document.getElementById('resetQuiz').addEventListener('click', function() {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+            
+            document.querySelectorAll('.quiz-feedback').forEach(feedback => {
+                feedback.style.display = 'none';
+            });
+        });
+        
+        // Source buttons functionality
+        document.querySelectorAll('.source-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const sourceId = this.getAttribute('data-source');
+                const sourceElement = document.getElementById(sourceId);
+                sourceElement.scrollIntoView({ behavior: 'smooth' });
+                
+                // Highlight the source
+                sourceElement.style.backgroundColor = '#fff3cd';
+                setTimeout(() => {
+                    sourceElement.style.backgroundColor = '';
+                }, 2000);
+            });
+        });
+        
+        // Interactive map tooltip
+        const map = document.querySelector('.interactive-map');
+        const tooltip = document.getElementById('mapTooltip');
+        
+        // Sample coordinates for some countries (would need proper implementation for real map)
+        const countryData = {
+            'Europe': 'Western Europe: U.S. influence through NATO and Marshall Plan<br>Eastern Europe: Soviet control through Warsaw Pact',
+            'Asia': 'Korea: Divided at 38th parallel<br>Vietnam: Site of major proxy war',
+            'Africa': 'Angola: Site of civil war with U.S. and USSR backing different sides',
+            'Latin America': 'Nicaragua: Sandinistas vs. U.S.-backed Contras<br>Cuba: Soviet ally near U.S.'
+        };
+        
+        map.addEventListener('mousemove', function(e) {
+            // In a real implementation, you would use proper map coordinates
+            // This is just a simplified demonstration
+            tooltip.style.display = 'block';
+            tooltip.style.left = (e.clientX - map.getBoundingClientRect().left + 10) + 'px';
+            tooltip.style.top = (e.clientY - map.getBoundingClientRect().top + 10) + 'px';
+            
+            // Simplified region detection (would need proper implementation)
+            let region = '';
+            if (e.clientY < 200) region = 'Europe';
+            else if (e.clientY < 300) region = 'Asia';
+            else if (e.clientY < 400) region = 'Africa';
+            else region = 'Latin America';
+            
+            tooltip.innerHTML = `<strong>${region}</strong><br>${countryData[region]}`;
+        });
+        
+        map.addEventListener('mouseout', function() {
+            tooltip.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
